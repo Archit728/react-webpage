@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/brain.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>GPT-3</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+
+    <script>
+      function heavyComputationTask(iterations) {
+        let result = 0;
+        for (let i = 0; i < iterations; i++) {
+          let temp = (i * i * i) % (i + 1);
+          result += temp;
+        }
+        return result;
+      }
+
+      function renderElements(data) {
+        const container = document.createElement("div");
+        container.id = "test-container";
+
+        const existingContainer = document.getElementById("test-container");
+        if (existingContainer) {
+          existingContainer.remove();
+        }
+
+        document.body.appendChild(container);
+
+        // Convert the object to an array of entries and limit to 1000 entries
+        const dataArray = Object.entries(data).slice(0, 1000);
+
+        dataArray.forEach(([key, value], index) => {
+          const newElement = document.createElement("div");
+          newElement.innerText = `Item ${key}: ${value}`;
+          newElement.style.cssText =
+            "padding: 5px; border: 1px solid black; margin: 2px; color: white; background-color: #333;";
+          container.appendChild(newElement);
+        });
+      }
+
+      async function fetchData() {
+        console.time("API Request Duration");
+        const response = await fetch(
+          "https://dummyjson.com/c/8295-5ca4-456f-a2e2"
+        );
+        const data = await response.json();
+        console.timeEnd("API Request Duration");
+
+        return data;
+      }
+
+      async function runPerformanceTest() {
+        console.time("Total Test Duration");
+
+        console.time("Computation Duration");
+        const computationResult = heavyComputationTask(1000000);
+        console.timeEnd("Computation Duration");
+        console.log("Computation Result:", computationResult);
+
+        const data = await fetchData();
+
+        console.time("Rendering Duration");
+        renderElements(data);
+        console.timeEnd("Rendering Duration");
+
+        console.timeEnd("Total Test Duration");
+      }
+
+      window.onload = runPerformanceTest;
+    </script>
+  </body>
+</html>
+
+
